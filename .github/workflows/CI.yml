@@ -5,16 +5,14 @@ on:
   push:
     branches: [ main, dev ]
     paths:
-      - 'modules/backend/**'
-      - 'modules/frontend/**'
+      - 'backend/**'
       - '.github/workflows/CI.yml'
 
   pull_request:
     branches: [ main, dev ]
     types: [opened, reopened, synchronize, edited]
     paths:
-      - 'modules/backend/**'
-      - 'modules/frontend/**'
+      - 'backend/**'
       - '.github/workflows/CI.yml'
 
 jobs:
@@ -61,7 +59,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: modules/backend
+        working-directory: backend
 
     steps:
       - name: Checkout code
@@ -77,31 +75,3 @@ jobs:
         run: mvn clean install -DskipTests=true
 
 
-  # FRONTEND BUILD — DEV + MAIN
-
-  frontend-build:
-    runs-on: ubuntu-latest
-    if: >
-      github.ref_name == 'dev' ||
-      github.ref_name == 'main' ||
-      github.base_ref == 'dev' ||
-      github.base_ref == 'main'
-
-    defaults:
-      run:
-        working-directory: modules/frontend
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.19'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build frontend
-        run: npm run build
