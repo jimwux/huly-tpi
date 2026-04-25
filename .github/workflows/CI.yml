@@ -88,6 +88,9 @@ jobs:
       github.base_ref == 'dev' ||
       github.base_ref == 'main'
 
+    permissions:
+      pull-requests: write
+
     services:
       postgres:
         image: postgres:16
@@ -123,6 +126,23 @@ jobs:
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
         run: mvn verify
+
+      - name: Coverage summary
+        run: |
+          pct=$(python3 -c "
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('target/site/jacoco/jacoco.xml')
+          for c in tree.getroot().findall('counter'):
+              if c.get('type') == 'LINE':
+                  cov, mis = int(c.get('covered')), int(c.get('missed'))
+                  tot = cov + mis
+                  print(f'{cov/tot*100:.1f}' if tot else '0.0')
+                  break
+          ")
+          echo "## Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Line coverage | **${pct}%** |" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload coverage report
         if: always()
