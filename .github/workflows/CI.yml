@@ -75,3 +75,57 @@ jobs:
         run: mvn clean install -DskipTests=true
 
 
+  # TEST COVERAGE — DEV + MAIN
+
+  test-coverage:
+    runs-on: ubuntu-latest
+    if: >
+      github.ref_name == 'dev' ||
+      github.ref_name == 'main' ||
+      github.base_ref == 'dev' ||
+      github.base_ref == 'main'
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: huly
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Run tests with coverage
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/huly
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+        run: mvn verify
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: backend/target/site/jacoco/
+
+
