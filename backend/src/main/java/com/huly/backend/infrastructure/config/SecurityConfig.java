@@ -1,4 +1,4 @@
-package com.huly.backend.config;
+package com.huly.backend.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
