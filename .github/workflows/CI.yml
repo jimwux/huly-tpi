@@ -1,4 +1,4 @@
-# .github/workflows/CI.yml
+# .GitHub/workflows/CI.yml
 name: CI Build
 
 env:
