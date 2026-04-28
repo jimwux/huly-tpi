@@ -6,6 +6,7 @@ import com.huly.backend.domain.useCase.CreateUseCase;
 import com.huly.backend.presentation.dto.ExampleRequest;
 import com.huly.backend.presentation.dto.ExampleResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +38,24 @@ public class ExampleController {
 
         );
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        String html = """
+                <!DOCTYPE html>
+                <html>
+                <head><title>Test</title></head>
+                <body>
+                    <h1>Server is running!</h1>
+                    <p>Deploy exitoso en Render</p>
+                    <p>Ponete a chambear crgio</p>
+                </body>
+                </html>
+                """;
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_HTML)
+                .body(html);
+    }
+
 
 }
