@@ -129,7 +129,7 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/huly
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
-        run: mvn verify
+        run: mvn verify -Dspring.profiles.active=coverage-test
 
       - name: Coverage summary
         run: |
