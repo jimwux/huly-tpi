@@ -1,5 +1,5 @@
-const BASE_URL = '/api'
-
+//const BASE_URL = '/api'
+const BASE_URL = `${import.meta.env.VITE_API_URL ?? ''}/api`
 type RequestOptions = Omit<RequestInit, 'body'> & { body?: unknown }
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
